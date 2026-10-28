@@ -1,0 +1,46 @@
+```mermaid
+
+direction: right
+
+Professor: {
+  label: "Professor"
+  start: "" { shape: oval; width: 20; height: 20 }
+  solicitar: "Solicitar sala\ndata e horário"
+  escolher: "Escolher outro\nhorário ou sala"
+  aviso: "Receber aviso\nde confirmação"
+}
+
+SmartCampus: {
+  label: "Smart Campus"
+  receber_pedido: "Receber pedido\nde agendamento"
+  sala_livre: "Sala livre?" { shape: diamond }
+  reservar: "Reservar sala\ncria agendamento"
+  enviar_cmd: "Enviar comando\nligar no horário"
+}
+
+GradeHoraria: {
+  label: "Grade horária"
+  fornecer: "Fornecer grade\nde aulas e salas"
+}
+
+Equipamentos: {
+  label: "Equipamentos"
+  receber_cmd: "Receber comando\ne agendar início"
+  inicio_agendado: "Início agendado\naguarda o horário"
+  end: "" { shape: oval; width: 20; height: 20 }
+}
+
+Professor.start -> Professor.solicitar
+Professor.solicitar -> SmartCampus.receber_pedido
+SmartCampus.receber_pedido -> SmartCampus.sala_livre
+GradeHoraria.fornecer -> SmartCampus.sala_livre
+
+SmartCampus.sala_livre -> Professor.escolher: "NÃO"
+Professor.escolher -> Professor.solicitar
+
+SmartCampus.sala_livre -> SmartCampus.reservar: "SIM"
+SmartCampus.reservar -> Professor.aviso
+SmartCampus.reservar -> SmartCampus.enviar_cmd
+SmartCampus.enviar_cmd -> Equipamentos.receber_cmd
+Equipamentos.receber_cmd -> Equipamentos.inicio_agendado
+Equipamentos.inicio_agendado -> Equipamentos.end

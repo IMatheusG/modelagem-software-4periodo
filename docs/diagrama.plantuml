@@ -1,0 +1,36 @@
+@startuml
+skinparam handwritten false
+skinparam monochrome false
+skinparam packageStyle rectangle
+
+|Professor|
+start
+:Solicitar sala\ndata e horário;
+
+|Smart Campus|
+:Receber pedido\nde agendamento;
+
+|Grade horária|
+:Fornecer grade\nde aulas e salas;
+
+|Smart Campus|
+if (Sala livre?) is (NÃO) then
+  |Professor|
+  :Escolher outro\nhorário ou sala;
+  detach
+else (SIM)
+  |Smart Campus|
+  :Reservar sala\ncria agendamento;
+  fork
+    |Professor|
+    :Receber aviso\nde confirmação;
+  fork again
+    |Smart Campus|
+    :Enviar comando\nligar no horário;
+    |Equipamentos|
+    :Receber comando\ne agendar início;
+    :Início agendado\naguarda o horário;
+    stop
+  end fork
+endif
+@enduml
