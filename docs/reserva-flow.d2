@@ -1,7 +1,8 @@
+#O diagrama foi implementado em D2, que não possui suporte nativo a fragmentos ALT e activation bars da UML.
+
 shape: sequence_diagram
 
-# Definindo apelidos (labels) legíveis para os participantes
-Professor: Actor
+Professor
 APP
 Service
 Repository: Database
@@ -13,16 +14,17 @@ APP -> Service: POST app/reserva
 
 Service -> Repository: Validar disponibilidade
 Repository -> Service: disponivel = true
-
-alt disponivel = true {
+"sucesso": {
+  Service -> Service: disponivel = true
   Service -> Repository: Reservar
   Repository -> Service: reservado = true
-  
   Repository -> RabbitMQ: registrar msg reserva = ok
   Service -> APP: https code 200
   APP -> Professor: Alerta: Sucesso na reserva
-  Service -> Equipamentos: agenda inicialização programada
-} else {
+  Repository -> Equipamentos: agenda inicialização programada
+}
+"falha": {
+  Service -> Service: disponivel = false
   Service -> APP: https code 400
   APP -> Professor: Alerta: Falha na reserva
-} 
+}
